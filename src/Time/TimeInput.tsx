@@ -62,6 +62,11 @@ function TimeInput(
         : `${controlledValue}`
   }
 
+  const onInputFocus = () => {
+    setControlledValue("")
+    setInputFocused(true)
+  }
+
   return (
     <View style={styles.root}>
       <TextInput
@@ -76,7 +81,7 @@ function TimeInput(
         ]}
         value={formattedValue}
         maxLength={2}
-        onFocus={() => setInputFocused(true)}
+        onFocus={onInputFocus}
         onBlur={() => setInputFocused(false)}
         keyboardAppearance={theme.dark ? 'dark' : 'default'}
         keyboardType="number-pad"
