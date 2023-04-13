@@ -1,6 +1,3 @@
-// @typescript-eslint/no-unused-vars
-// WORK IN PROGRESS
-
 import * as React from 'react'
 import {
   View,
@@ -8,7 +5,7 @@ import {
   useWindowDimensions,
   TextInput as TextInputNative,
 } from 'react-native'
-import { useTheme } from 'react-native-paper'
+import { MD2Theme, Text, useTheme } from 'react-native-paper'
 
 import {
   clockTypes,
@@ -30,6 +27,7 @@ function TimeInputs({
   inputType,
   onChange,
   is24Hour,
+  inputFontSize,
 }: {
   inputType: PossibleInputTypes
   focused: PossibleClockTypes
@@ -42,6 +40,7 @@ function TimeInputs({
     focused?: undefined | PossibleClockTypes
   }) => any
   is24Hour: boolean
+  inputFontSize?: number
 }) {
   const startInput = React.useRef<TextInputNative | null>(null)
   const endInput = React.useRef<TextInputNative | null>(null)
@@ -78,34 +77,50 @@ function TimeInputs({
         isLandscape && styles.inputContainerLandscape,
       ]}
     >
-      <TimeInput
-        ref={startInput}
-        placeholder={'00'}
-        value={toHourInputFormat(hours, is24Hour)}
-        clockType={clockTypes.hours}
-        pressed={focused === clockTypes.hours}
-        onPress={onFocusInput}
-        inputType={inputType}
-        selectionColor={
-          theme.dark
-            ? Color(theme.colors.primary).darken(0.2).hex()
-            : theme.colors.primary
-        }
-        returnKeyType={'next'}
-        onSubmitEditing={onSubmitStartInput}
-        blurOnSubmit={false}
-        onChanged={(newHoursFromInput) => {
-          let newHours = toHourOutputFormat(newHoursFromInput, hours, is24Hour)
-          if (newHoursFromInput > 24) {
-            newHours = 24
+      <View style={styles.column}>
+        <TimeInput
+          ref={startInput}
+          inputFontSize={inputFontSize}
+          placeholder={'00'}
+          value={toHourInputFormat(hours, is24Hour)}
+          clockType={clockTypes.hours}
+          pressed={focused === clockTypes.hours}
+          onPress={onFocusInput}
+          inputType={inputType}
+          selectionColor={
+            theme.dark
+              ? Color(theme.colors.primary).darken(0.2).hex()
+              : theme.colors.primary
           }
-          onChange({
-            hours: newHours,
-            minutes,
-          })
-        }}
-      />
-      <View style={styles.hoursAndMinutesSeparator}>
+          returnKeyType={'next'}
+          onSubmitEditing={onSubmitStartInput}
+          blurOnSubmit={false}
+          onChanged={(newHoursFromInput) => {
+            let newHours = toHourOutputFormat(
+              newHoursFromInput,
+              hours,
+              is24Hour
+            )
+            if (newHoursFromInput > 24) {
+              newHours = 24
+            }
+            onChange({
+              hours: newHours,
+              minutes,
+            })
+          }}
+        />
+        {inputType === 'keyboard' ? (
+          <Text variant="bodySmall">Hour</Text>
+        ) : null}
+      </View>
+      <View
+        style={[
+          styles.hoursAndMinutesSeparator,
+          // eslint-disable-next-line react-native/no-inline-styles
+          { marginBottom: inputType === 'keyboard' ? 24 : 0 },
+        ]}
+      >
         <View style={styles.spaceDot} />
         <View style={[styles.dot, { backgroundColor: "white" }]} />
         <View style={styles.betweenDot} />
@@ -129,16 +144,30 @@ function TimeInputs({
           if (newMinutesFromInput > 59) {
             newMinutes = 59
           }
-          onChange({
-            hours,
-            minutes: newMinutes,
-          })
-        }}
-      />
+          onSubmitEditing={onSubmitEndInput}
+          onChanged={(newMinutesFromInput) => {
+            let newMinutes = newMinutesFromInput
+            if (newMinutesFromInput > 59) {
+              newMinutes = 59
+            }
+            onChange({
+              hours,
+              minutes: newMinutes,
+            })
+          }}
+        />
+        {inputType === 'keyboard' ? (
+          <Text variant="bodySmall">Minute</Text>
+        ) : null}
+      </View>
       {!is24Hour && (
         <>
           <View style={styles.spaceBetweenInputsAndSwitcher} />
-          <AmPmSwitcher hours={hours} onChange={onChangeHours} />
+          <AmPmSwitcher
+            hours={hours}
+            onChange={onChangeHours}
+            inputType={inputType}
+          />
         </>
       )}
     </View>
@@ -146,6 +175,9 @@ function TimeInputs({
 }
 
 const styles = StyleSheet.create({
+  column: {
+    flexDirection: 'column',
+  },
   spaceBetweenInputsAndSwitcher: { width: 12 },
   inputContainer: {
     flexDirection: 'row',

@@ -1,15 +1,11 @@
 import * as React from 'react'
 import { View, StyleSheet } from 'react-native'
-import { IconButton, Text, useTheme } from 'react-native-paper'
+import { IconButton, MD2Theme, Text, useTheme } from 'react-native-paper'
 import type { ModeType } from './Calendar'
 import type { LocalState } from './DatePickerModalContent'
 import { useHeaderTextColor } from '../utils'
 import Color from 'color'
 import { getTranslation } from '../translations/utils'
-import type {
-  Fonts,
-  MD3Typescale,
-} from 'react-native-paper/lib/typescript/types'
 
 export interface HeaderPickProps {
   moreLabel?: string
@@ -23,6 +19,7 @@ export interface HeaderPickProps {
   editIcon?: string
   calendarIcon?: string
   closeIcon?: string
+  allowEditing?: boolean
 }
 
 export interface HeaderContentProps extends HeaderPickProps {
@@ -62,25 +59,29 @@ export default function DatePickerModalContentHeader(
     mode,
     moreLabel,
     uppercase,
-    editIcon = 'pencil',
-    calendarIcon = 'calendar',
+    editIcon,
+    calendarIcon,
+    allowEditing,
   } = props
   const theme = useTheme()
   const label = getLabel(props.locale, props.mode, props.label)
 
   const color = useHeaderTextColor()
-  const allowEditing = mode !== 'multiple'
 
-  let textFont = (theme.fonts as Fonts)?.medium
+  const isEditingEnabled = allowEditing && mode !== 'multiple'
 
-  if (theme.isV3) {
-    textFont = (theme.fonts as MD3Typescale)?.bodyLarge
-  }
+  const supportingTextColor = theme.isV3 ? theme.colors.onSurfaceVariant : color
+
+  const textFont = theme?.isV3
+    ? theme.fonts.labelMedium
+    : (theme as any as MD2Theme).fonts.medium
 
   return (
-    <View style={[styles.header]}>
+    <View style={styles.header}>
       <View>
-        <Text style={[styles.label, { color, ...textFont }]}>
+        <Text
+          style={[styles.label, { color: supportingTextColor, ...textFont }]}
+        >
           {uppercase ? label.toUpperCase() : label}
         </Text>
         <View style={styles.headerContentContainer}>
@@ -100,15 +101,23 @@ export default function DatePickerModalContentHeader(
         </View>
       </View>
       <View style={styles.fill} />
-      {allowEditing ? (
+      {isEditingEnabled ? (
         <IconButton
-          icon={collapsed ? editIcon : calendarIcon}
+          icon={
+            collapsed
+              ? editIcon ?? theme.isV3
+                ? 'pencil-outline'
+                : 'pencil'
+              : calendarIcon ?? theme.isV3
+              ? 'calendar-blank'
+              : 'calendar'
+          }
           accessibilityLabel={
             collapsed
               ? getTranslation(props.locale, 'typeInDate')
               : getTranslation(props.locale, 'pickDateFromCalendar')
           }
-          iconColor={color}
+          iconColor={theme.isV3 ? theme.colors.onSurface : color}
           onPress={onToggle}
         />
       ) : null}
@@ -122,8 +131,13 @@ export function HeaderContentSingle({
   color,
   locale,
 }: HeaderContentProps & { color: string }) {
+  const theme = useTheme()
   const lighterColor = Color(color).fade(0.5).rgb().toString()
-  const dateColor = state.date ? color : lighterColor
+  const dateColor = state.date
+    ? theme.isV3
+      ? theme.colors.onSurface
+      : color
+    : lighterColor
 
   const formatter = React.useMemo(() => {
     return new Intl.DateTimeFormat(locale, {
@@ -146,9 +160,14 @@ export function HeaderContentMulti({
   color,
   locale,
 }: HeaderContentProps & { color: string; moreLabel: string | undefined }) {
+  const theme = useTheme()
   const dateCount = state.dates?.length || 0
   const lighterColor = Color(color).fade(0.5).rgb().toString()
-  const dateColor = dateCount ? color : lighterColor
+  const dateColor = dateCount
+    ? theme.isV3
+      ? theme.colors.onSurface
+      : color
+    : lighterColor
 
   const formatter = React.useMemo(() => {
     return new Intl.DateTimeFormat(locale, {
@@ -180,6 +199,7 @@ export function HeaderContentRange({
   endLabel = 'End',
   color,
 }: HeaderContentProps & { color: string }) {
+  const theme = useTheme()
   const formatter = React.useMemo(() => {
     return new Intl.DateTimeFormat(locale, {
       month: 'short',
@@ -188,8 +208,16 @@ export function HeaderContentRange({
   }, [locale])
 
   const lighterColor = Color(color).fade(0.5).rgb().toString()
-  const startColor = state.startDate ? color : lighterColor
-  const endColor = state.endDate ? color : lighterColor
+  const startColor = state.startDate
+    ? theme.isV3
+      ? theme.colors.onSurface
+      : color
+    : lighterColor
+  const endColor = state.endDate
+    ? theme.isV3
+      ? theme.colors.onSurface
+      : color
+    : lighterColor
 
   return (
     <>
@@ -232,7 +260,6 @@ const styles = StyleSheet.create({
     marginTop: -3,
     marginLeft: 3,
   },
-
   headerSeparator: {
     color: 'rgba(255,255,255,1)',
     fontSize: 25,

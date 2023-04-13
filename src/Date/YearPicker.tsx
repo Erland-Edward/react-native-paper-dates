@@ -1,10 +1,6 @@
 import * as React from 'react'
-import { FlatList, StyleSheet, View } from 'react-native'
-import { Text, TouchableRipple, useTheme } from 'react-native-paper'
-import type {
-  Fonts,
-  MD3Typescale,
-} from 'react-native-paper/lib/typescript/types'
+import { FlatList, StyleSheet, View, ScrollView } from 'react-native'
+import { MD2Theme, Text, TouchableRipple, useTheme } from 'react-native-paper'
 import { range } from '../utils'
 
 const ITEM_HEIGHT = 62
@@ -54,6 +50,9 @@ export default function YearPicker({
         ref={flatList}
         style={styles.list}
         data={years}
+        renderScrollComponent={(sProps) => {
+          return <ScrollView {...sProps} />
+        }}
         renderItem={({ item }) => (
           <Year
             year={item}
@@ -79,11 +78,9 @@ function YearPure({
 }) {
   const theme = useTheme()
 
-  let textFont = (theme.fonts as Fonts)?.medium
-
-  if (theme.isV3) {
-    textFont = (theme.fonts as MD3Typescale)?.bodyLarge
-  }
+  let textFont = theme?.isV3
+    ? theme.fonts.bodyLarge
+    : (theme as any as MD2Theme).fonts.medium
 
   return (
     <View style={styles.year}>
@@ -102,7 +99,14 @@ function YearPure({
           <Text
             style={[
               styles.yearLabel,
-              selected ? styles.selectedYear : null,
+              selected
+                ? // eslint-disable-next-line react-native/no-inline-styles
+                  { color: theme.isV3 ? theme.colors.onPrimary : '#fff' }
+                : {
+                    color: theme.isV3
+                      ? theme.colors.onSurfaceVariant
+                      : undefined,
+                  },
               { ...textFont },
             ]}
             selectable={false}
@@ -133,7 +137,6 @@ const styles = StyleSheet.create({
     height: ITEM_HEIGHT,
     justifyContent: 'center',
   },
-  selectedYear: { color: '#fff' },
   yearButton: {
     borderRadius: 46 / 2,
     overflow: 'hidden',

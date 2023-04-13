@@ -43,7 +43,7 @@ function AnalogClock({
   const theme = useTheme()
   const { mode } = React.useContext(DisplayModeContext)
   // used to make pointer shorter if hours are selected and above 12
-  const shortPointer = (hours === 0 || hours > 12) && is24Hour
+  const shortPointer = hours >= 12 && is24Hour
   const clockRef = React.useRef<View | null>(null)
   // Hooks are nice, sometimes... :-)..
   // We need the latest values, since the onPointerMove uses a closure to the function
@@ -63,7 +63,7 @@ function AnalogClock({
         let previousHourType = getHourType(hoursRef.current)
         let pickedHours = getHours(angle, previousHourType)
 
-        let hours12AndPm = !hours24 && modeRef.current === 'AM'
+        let hours12AndPm = !hours24 && modeRef.current === 'PM'
 
         let hourTypeFromOffset = getHourTypeFromOffset(x, y, circleSize)
         let hours24AndPM = hours24 && hourTypeFromOffset === hourTypes.pm
@@ -74,15 +74,16 @@ function AnalogClock({
         if (hours12AndPm || hours24AndPM) {
           pickedHours += 12
         }
-        if (modeRef.current === 'AM' && pickedHours === 12) {
+        if ((modeRef.current === 'AM' || hours24) && pickedHours === 12) {
           pickedHours = 0
         }
 
-        if (
-          (!hours24 && modeRef.current === 'AM' && pickedHours === 12) ||
-          pickedHours === 24
-        ) {
+        if (!hours24 && modeRef.current === 'AM' && pickedHours === 12) {
           pickedHours = 0
+        }
+
+        if (pickedHours === 24) {
+          pickedHours = 12
         }
 
         if (hoursRef.current !== pickedHours || final) {
@@ -127,10 +128,10 @@ function AnalogClock({
       style={[
         styles.clock,
         {
-          backgroundColor: theme.dark
+          backgroundColor: theme.isV3
+            ? theme.colors.surfaceVariant
+            : theme.dark
             ? Color(theme.colors.surface).lighten(1.4).hex()
-            : theme.isV3
-            ? Color(theme.colors.outline).lighten(0.9).hex()
             : Color(theme.colors.surface).darken(0.1).hex(),
         },
       ]}
@@ -145,7 +146,15 @@ function AnalogClock({
             transform: [
               { rotate: -90 + pointerNumber * degreesPerNumber + 'deg' },
               {
-                translateX: circleSize / 4 - 4 - dynamicSize / 2,
+                translateX:
+                  circleSize / 4 -
+                  (focused === clockTypes.hours &&
+                  pointerNumber >= 0 &&
+                  pointerNumber < 13
+                    ? 0
+                    : 4) +
+                  (focused === clockTypes.minutes ? 4 : 0) -
+                  dynamicSize / 2,
               },
             ],
             width: circleSize / 2 - 4 - dynamicSize,
@@ -194,16 +203,15 @@ const styles = StyleSheet.create({
   },
   center: { justifyContent: 'center', alignItems: 'center' },
   endPoint: {
-    borderRadius: 15,
-    height: 30,
-    width: 30,
+    borderRadius: 24,
+    height: 48,
+    width: 48,
     position: 'absolute',
     right: 0,
-    bottom: -14,
+    bottom: -23,
   },
   line: {
     position: 'absolute',
-    marginBottom: -1,
     height: 2,
     borderRadius: 4,
   },

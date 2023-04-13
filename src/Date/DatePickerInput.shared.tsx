@@ -10,8 +10,18 @@ export type DatePickerInputProps = {
   validRange?: ValidRangeType | undefined
   withModal?: boolean
   withDateFormatInLabel?: boolean
+  hideValidationErrors?: boolean
+  hasError?: boolean
+  onValidationError?: ((error: string | null) => void) | undefined
   calendarIcon?: string
+  saveLabel?: string
+  saveLabelDisabled?: boolean
+  uppercase?: boolean
+  startYear?: number
+  endYear?: number
+  onChangeText?: (text: string | undefined) => void
+  inputEnabled?: boolean
 } & Omit<
   React.ComponentProps<typeof TextInput>,
-  'value' | 'onChange' | 'onChangeText'
+  'value' | 'onChange' | 'onChangeText' | 'inputMode'
 >
