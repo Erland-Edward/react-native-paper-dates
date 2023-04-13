@@ -107,9 +107,9 @@ function TimeInputs({
       />
       <View style={styles.hoursAndMinutesSeparator}>
         <View style={styles.spaceDot} />
-        <View style={[styles.dot, { backgroundColor: theme.colors.text }]} />
+        <View style={[styles.dot, { backgroundColor: "white" }]} />
         <View style={styles.betweenDot} />
-        <View style={[styles.dot, { backgroundColor: theme.colors.text }]} />
+        <View style={[styles.dot, { backgroundColor: "white" }]} />
         <View style={styles.spaceDot} />
       </View>
       <TimeInput
@@ -121,9 +121,7 @@ function TimeInputs({
         onPress={onFocusInput}
         inputType={inputType}
         selectionColor={
-          theme.dark
-            ? Color(theme.colors.primary).darken(0.2).hex()
-            : theme.colors.primary
+          "gray"
         }
         onSubmitEditing={onSubmitEndInput}
         onChanged={(newMinutesFromInput) => {
