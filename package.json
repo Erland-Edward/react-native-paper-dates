@@ -85,7 +85,7 @@
   "peerDependencies": {
     "react": "*",
     "react-native": "*",
-    "react-native-paper": "*",
+    "react-native-paper": "^5.2.0",
     "react-native-vector-icons": "*"
   },
   "husky": {
