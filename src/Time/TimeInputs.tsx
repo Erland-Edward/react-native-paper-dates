@@ -87,11 +87,7 @@ function TimeInputs({
           pressed={focused === clockTypes.hours}
           onPress={onFocusInput}
           inputType={inputType}
-          selectionColor={
-            theme.dark
-              ? Color(theme.colors.primary).darken(0.2).hex()
-              : theme.colors.primary
-          }
+          selectionColor={"gray"}
           returnKeyType={'next'}
           onSubmitEditing={onSubmitStartInput}
           blurOnSubmit={false}
@@ -110,9 +106,6 @@ function TimeInputs({
             })
           }}
         />
-        {inputType === 'keyboard' ? (
-          <Text variant="bodySmall">Hour</Text>
-        ) : null}
       </View>
       <View
         style={[
@@ -126,9 +119,7 @@ function TimeInputs({
           style={[
             styles.dot,
             {
-              backgroundColor: theme?.isV3
-                ? theme.colors.onSurface
-                : (theme as any as MD2Theme).colors.text,
+              backgroundColor: "white"
             },
           ]}
         />
@@ -137,9 +128,7 @@ function TimeInputs({
           style={[
             styles.dot,
             {
-              backgroundColor: theme?.isV3
-                ? theme.colors.onSurface
-                : (theme as any as MD2Theme).colors.text,
+              backgroundColor: "white"
             },
           ]}
         />
@@ -155,11 +144,7 @@ function TimeInputs({
           pressed={focused === clockTypes.minutes}
           onPress={onFocusInput}
           inputType={inputType}
-          selectionColor={
-            theme.dark
-              ? Color(theme.colors.primary).darken(0.2).hex()
-              : theme.colors.primary
-          }
+          selectionColor="gray"
           onSubmitEditing={onSubmitEndInput}
           onChanged={(newMinutesFromInput) => {
             let newMinutes = newMinutesFromInput
@@ -172,9 +157,6 @@ function TimeInputs({
             })
           }}
         />
-        {inputType === 'keyboard' ? (
-          <Text variant="bodySmall">Minute</Text>
-        ) : null}
       </View>
       {!is24Hour && (
         <>

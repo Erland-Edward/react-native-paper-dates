@@ -199,43 +199,14 @@ export function useSwitchColors(highlighted: boolean) {
 export function useInputColors(highlighted: boolean) {
   const theme = useTheme()
   const backgroundColor = React.useMemo<string>(() => {
-    if (theme.dark) {
-      if (highlighted) {
-        return theme.isV3
-          ? theme.colors.primaryContainer
-          : Color(theme.colors.primary).hex()
-      }
-      return theme.isV3
-        ? theme.colors.surfaceVariant
-        : Color(theme.colors.surface).lighten(1.4).hex()
-    }
-
     if (highlighted) {
-      if (theme.isV3) {
-        return theme.colors.secondaryContainer
-      }
-      return Color(theme.colors.primary).lighten(1).hex()
+      return "lightgray"
     }
-    if (theme.isV3) {
-      return theme.colors.surfaceVariant
-    }
-    return Color(theme.colors.surface).darken(0.1).hex()
+    return "white"
   }, [highlighted, theme])
 
   const color = React.useMemo<string>(() => {
-    if (theme.isV3) {
-      if (!highlighted) {
-        return theme.isV3 ? theme.colors.onSurface : theme.colors.onBackground
-      }
-      return theme.isV3
-        ? theme.colors.onPrimaryContainer
-        : theme.colors.onBackground
-    } else {
-      if (highlighted && !theme.dark) {
-        return theme.colors.primary
-      }
-      return (theme as any as MD2Theme).colors.text
-    }
+    return "black"    
   }, [highlighted, theme])
 
   return { backgroundColor, color }
