@@ -11,7 +11,6 @@ import {
 } from 'react-native'
 
 import {
-  Button,
   IconButton,
   MD2Theme,
   overlay,
@@ -27,8 +26,8 @@ import {
   PossibleInputTypes,
   reverseInputTypes,
 } from './timeUtils'
-import TimePickerCancelButton from 'react-native-paper-dates/src/Time/components/TimePickerCancelButton'
-import TimePickerConfirmButton from 'react-native-paper-dates/src/Time/components/TimePickerConfirmButton'
+import TimePickerCancelButton from './components/TimePickerCancelButton'
+import TimePickerConfirmButton from './components/TimePickerConfirmButton'
 
 const supportedOrientations: (
   | 'portrait'

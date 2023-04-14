@@ -5,7 +5,6 @@ import {
   useWindowDimensions,
   TextInput as TextInputNative,
 } from 'react-native'
-import { MD2Theme, Text, useTheme } from 'react-native-paper'
 
 import {
   clockTypes,
@@ -17,7 +16,6 @@ import {
 import TimeInput from './TimeInput'
 import AmPmSwitcher from './AmPmSwitcher'
 import { useLatest } from '../utils'
-import Color from 'color'
 
 function TimeInputs({
   hours,
@@ -46,7 +44,6 @@ function TimeInputs({
   const endInput = React.useRef<TextInputNative | null>(null)
   const dimensions = useWindowDimensions()
   const isLandscape = dimensions.width > dimensions.height
-  const theme = useTheme()
 
   const onSubmitStartInput = React.useCallback(() => {
     if (endInput.current) {
