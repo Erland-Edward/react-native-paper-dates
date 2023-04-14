@@ -86,7 +86,7 @@ export function TimePickerModal({
   }
 
   const [inputType, setInputType] = React.useState<PossibleInputTypes>(
-    inputTypes.picker
+    inputTypes.keyboard
   )
   const [focused, setFocused] = React.useState<PossibleClockTypes>(
     clockTypes.hours
