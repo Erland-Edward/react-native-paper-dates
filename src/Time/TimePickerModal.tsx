@@ -7,7 +7,6 @@ import {
   Animated,
   TouchableWithoutFeedback,
   KeyboardAvoidingView,
-  ImageBackground,
 } from 'react-native'
 
 import {
@@ -161,72 +160,63 @@ export function TimePickerModal({
               style={[
                 styles.modalContent,
                 {
-                  backgroundColor:
-                    theme.dark && theme.isV3
-                      ? theme.colors.elevation.level3
-                      : theme.isV3
-                      ? theme.colors.surface
-                      : theme.dark
-                      ? overlay(10, theme.colors.surface)
-                      : theme.colors.surface,
+                  backgroundColor: "black",
                   borderRadius: theme.isV3
                     ? theme.roundness * 6
                     : theme.roundness,
                 },
               ]}
             >
-              <ImageBackground source={require("./assets/modal-bg-2.jpg")}>
-                <View style={styles.labelContainer}>
-                  <Text
-                    style={{
-                      ...textFont,
-                      letterSpacing: 1,
-                      fontSize: 14,
-                      color: "white"
-                    }}
-                  >
-                    {uppercase ? labelText.toUpperCase() : labelText}
-                  </Text>
-                </View>
-                <View style={styles.timePickerContainer}>
-                  <TimePicker
-                    locale={locale}
-                    inputType={inputType}
-                    use24HourClock={use24HourClock}
-                    inputFontSize={inputFontSize}
-                    focused={focused}
-                    hours={localHours}
-                    minutes={localMinutes}
-                    onChange={onChange}
-                    onFocusInput={onFocusInput}
-                  />
-                </View>
-                <View style={styles.bottom}>
-                  <IconButton
-                    icon={getTimeInputTypeIcon(inputType, {
-                      keyboard: keyboardIcon,
-                      picker: clockIcon,
-                    })}
-                    onPress={() => setInputType(reverseInputTypes[inputType])}
-                    size={24}
-                    style={styles.inputTypeToggle}
-                    accessibilityLabel="toggle keyboard"
-                    iconColor='white'
-                  />
-                  <View style={styles.fill} />
-                  <TimePickerCancelButton 
-                    onPress={onDismiss}
-                    text={cancelLabel}
-                    style={{marginRight: 20}}
-                  />
-                  <TimePickerConfirmButton 
-                    onPress={() =>
-                      onConfirm({ hours: localHours, minutes: localMinutes })
-                    }
-                    text={confirmLabel}
-                  />
-                </View>
-              </ImageBackground>
+              <View style={styles.labelContainer}>
+                <Text
+                  style={{
+                    ...textFont,
+                    letterSpacing: 1,
+                    fontSize: 14,
+                    color: "white"
+                  }}
+                >
+                  {uppercase ? labelText.toUpperCase() : labelText}
+                </Text>
+              </View>
+              <View style={styles.timePickerContainer}>
+                <TimePicker
+                  locale={locale}
+                  inputType={inputType}
+                  use24HourClock={use24HourClock}
+                  inputFontSize={inputFontSize}
+                  focused={focused}
+                  hours={localHours}
+                  minutes={localMinutes}
+                  onChange={onChange}
+                  onFocusInput={onFocusInput}
+                />
+              </View>
+              <View style={styles.bottom}>
+                <IconButton
+                  icon={getTimeInputTypeIcon(inputType, {
+                    keyboard: keyboardIcon,
+                    picker: clockIcon,
+                  })}
+                  onPress={() => setInputType(reverseInputTypes[inputType])}
+                  size={24}
+                  style={styles.inputTypeToggle}
+                  accessibilityLabel="toggle keyboard"
+                  iconColor='white'
+                />
+                <View style={styles.fill} />
+                <TimePickerCancelButton 
+                  onPress={onDismiss}
+                  text={cancelLabel}
+                  style={{marginRight: 20}}
+                />
+                <TimePickerConfirmButton 
+                  onPress={() =>
+                    onConfirm({ hours: localHours, minutes: localMinutes })
+                  }
+                  text={confirmLabel}
+                />
+              </View>
             </Animated.View>
           </KeyboardAvoidingView>
         </View>
