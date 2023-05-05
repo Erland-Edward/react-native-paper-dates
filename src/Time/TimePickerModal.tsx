@@ -12,7 +12,6 @@ import {
 import {
   IconButton,
   MD2Theme,
-  overlay,
   useTheme,
 } from 'react-native-paper'
 
