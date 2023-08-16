@@ -1,6 +1,12 @@
 import * as React from 'react'
 import { StyleSheet, View } from 'react-native'
-import { IconButton, Text, useTheme, TouchableRipple } from 'react-native-paper'
+import {
+  IconButton,
+  Text,
+  useTheme,
+  TouchableRipple,
+  MD2Theme,
+} from 'react-native-paper'
 import Day, { EmptyDay } from './Day'
 
 import {
@@ -29,10 +35,6 @@ import type {
 } from './Calendar'
 import { dayNamesHeight } from './DayNames'
 import { useTextColorOnPrimary } from '../utils'
-import type {
-  Fonts,
-  MD3Typescale,
-} from 'react-native-paper/lib/typescript/types'
 
 interface BaseMonthProps {
   locale: undefined | string
@@ -248,11 +250,9 @@ function Month(props: MonthSingleProps | MonthRangeProps | MonthMultiProps) {
     date,
   ])
 
-  let textFont = (theme.fonts as Fonts)?.medium
-
-  if (theme.isV3) {
-    textFont = (theme.fonts as MD3Typescale)?.bodyMedium
-  }
+  let textFont = theme?.isV3
+    ? theme.fonts.titleSmall
+    : (theme as any as MD2Theme).fonts.medium
 
   return (
     <View style={[styles.month, { height: getMonthHeight(scrollMode, index) }]}>
@@ -288,7 +288,15 @@ function Month(props: MonthSingleProps | MonthRangeProps | MonthMultiProps) {
             ]}
           >
             <Text
-              style={[styles.monthLabel, { ...textFont }]}
+              style={[
+                styles.monthLabel,
+                {
+                  ...textFont,
+                  color: theme.isV3
+                    ? theme.colors.onSurfaceVariant
+                    : theme.colors.onSurface,
+                },
+              ]}
               selectable={false}
             >
               {monthName} {year}
@@ -296,13 +304,20 @@ function Month(props: MonthSingleProps | MonthRangeProps | MonthMultiProps) {
             <View style={isHorizontal ? styles.opacity1 : styles.opacity0}>
               <IconButton
                 onPress={isHorizontal ? () => onPressYear(year) : undefined}
-                icon={selectingYear ? 'chevron-up' : 'chevron-down'}
+                icon={
+                  selectingYear
+                    ? theme.isV3
+                      ? 'menu-up'
+                      : 'chevron-up'
+                    : theme.isV3
+                    ? 'menu-down'
+                    : 'chevron-down'
+                }
               />
             </View>
           </View>
         </TouchableRipple>
       </View>
-
       {grid.map(({ weekIndex, generatedDays }) => (
         <View style={styles.week} key={weekIndex}>
           {generatedDays
@@ -350,9 +365,7 @@ const styles = StyleSheet.create({
     marginBottom: weekMargin,
     height: daySize,
   },
-
   month: {},
-
   monthHeader: {
     height: montHeaderHeight,
     justifyContent: 'center',
